@@ -1,0 +1,15 @@
+{
+  "name": "appletv-remote-cli",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "ora": "^4.0.3",
+    "terminal-kit": "^1.32.3",
+    "node-appletv": "^1.0.11"
+  }
+}
