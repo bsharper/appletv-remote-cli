@@ -177,6 +177,12 @@ function keyboardInput (myatv) {
         process.stdin.setRawMode(true);
         var spinner = ora(spinnerOpts)
         var exiting = false;
+        var lines = [];
+        for (var i=0; i<maxLines; i++) {
+            lines.push("");
+            term.nextLine();
+        }
+        
         spinner.start();
 
         process.stdin.on('keypress', (str, key) => {
@@ -201,13 +207,16 @@ function keyboardInput (myatv) {
                         var rcmd = keymap[k];
                         if (typeof(rcmd) === 'function') rcmd = rcmd(myatv);
                         if (! exiting) {
-                            var txt = term.str.dim(`[${++numCommands}] AppleTV command: ${rcmd}`)
+                            var txt = term.str.dim(`[${++numCommands}] AppleTV command: ${rcmd} (key press: ${k})`)
                             spinner.succeed(txt)
-                            curLine++;
-                            if (curLine >= maxLines) {
-                                term.previousLine(maxLines);
-                                curLine = 0;
-                            }
+                            lines.push(`✔ ${txt}`);
+                            lines.shift();
+                            term.previousLine(maxLines+1);
+                            lines.forEach(ln => {
+                                term.eraseLine();
+                                process.stdout.write(ln);
+                                term.nextLine();
+                            })
                             myatv.sendKeyCommand(atv.AppleTV.Key[rcmd])
                             term.eraseLine();
                             spinner = ora(spinnerOpts)
